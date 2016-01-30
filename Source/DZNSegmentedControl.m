@@ -439,8 +439,12 @@
     // Consider cases where NSCFConstantString can also be used
     class = [class isSubclassOfClass:[NSString class]] ? [NSString class] : class;
     
-    NSPredicate *classPredicate = [NSPredicate predicateWithFormat:@"self isKindOfClass: %@", class];
-    NSAssert([items filteredArrayUsingPredicate:classPredicate].count == items.count, @"Cannot include different objects in the array. Please make sure to either pass an array of NSString or UIImage objects.");
+    if ([firstItem isKindOfClass:[NSDictionary class]]) {
+        
+    } else {
+        NSPredicate *classPredicate = [NSPredicate predicateWithFormat:@"self isKindOfClass: %@", class];
+        NSAssert([items filteredArrayUsingPredicate:classPredicate].count == items.count, @"Cannot include different objects in the array. Please make sure to either pass an array of NSString or UIImage objects.");
+    }
     
     _items = [NSArray arrayWithArray:items];
     
@@ -858,6 +862,13 @@
     if ([item isKindOfClass:[NSString class]]) {
         [self configureButtonTitle:item forSegment:segment];
     }
+    else if ([item isKindOfClass:[NSDictionary class]]) {
+        NSDictionary* itemDict = item;
+        
+        NSString* title = itemDict[@"title"];
+        NSNumber* showCount = itemDict[@"showCount"];
+        [self configureButtonTitle:title forSegment:segment showCount:showCount.boolValue];
+    }
     else if ([item isKindOfClass:[UIImage class]]) {
         [self configureButtonImage:item forSegment:segment];
     }
@@ -868,6 +879,35 @@
     NSMutableString *mutableTitle = [NSMutableString stringWithString:title];
     
     if (self.showsCount) {
+        NSNumber *count = [self countForSegmentAtIndex:segment];
+        
+        NSString *breakString = @"\n";
+        NSString *countString;
+        
+        if (self.numberFormatter) {
+            countString = [self.numberFormatter stringFromNumber:count];
+        }
+        else if (!self.numberFormatter && _showsGroupingSeparators) {
+            countString = [[[self class] defaultFormatter] stringFromNumber:count];
+        }
+        else {
+            countString = [NSString stringWithFormat:@"%@", count];
+        }
+        
+        NSString *resultString = self.inverseTitles ? [breakString stringByAppendingString:countString] : [countString stringByAppendingString:breakString];
+        
+        [mutableTitle insertString:resultString atIndex:self.inverseTitles ? title.length : 0];
+    }
+    
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:mutableTitle];
+    [self setAttributedTitle:attributedString forSegmentAtIndex:segment];
+}
+
+- (void)configureButtonTitle:(NSString *)title forSegment:(NSUInteger)segment showCount:(BOOL)showCount 
+{
+    NSMutableString *mutableTitle = [NSMutableString stringWithString:title];
+    
+    if (showCount) {
         NSNumber *count = [self countForSegmentAtIndex:segment];
         
         NSString *breakString = @"\n";

@@ -56,7 +56,12 @@
 #if DEBUG_IMAGE
     _menuItems = @[[UIImage imageNamed:@"icn_clock"], [UIImage imageNamed:@"icn_emoji"], [UIImage imageNamed:@"icn_gift"]];
 #else
-    _menuItems = @[[@"Tweets" uppercaseString], [@"Following" uppercaseString], [@"Followers" uppercaseString]];
+    NSDictionary* tweets = @{
+                             @"title":[@"Tweets" uppercaseString],
+                             @"showCount": @0
+                             };
+    
+    _menuItems = @[tweets, [@"Following" uppercaseString], [@"Followers" uppercaseString]];
 #endif
     
     self.tableView.tableHeaderView = self.control;

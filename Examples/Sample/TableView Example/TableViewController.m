@@ -62,6 +62,7 @@
                              };
     
     _menuItems = @[tweets, [@"Following" uppercaseString], [@"Followers" uppercaseString]];
+//    _menuItems = @[[@"Tweets" uppercaseString], [@"Following" uppercaseString], [@"Followers" uppercaseString]];
 #endif
     
     self.tableView.tableHeaderView = self.control;

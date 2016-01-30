@@ -696,33 +696,35 @@
             NSArray *components = [attributedString.string componentsSeparatedByString:@"\n"];
             
             if (components.count < 2) {
-                return;
-            }
-            
-            NSString *count = [components objectAtIndex:self.inverseTitles ? 1 : 0];
-            NSString *title = [components objectAtIndex:self.inverseTitles ? 0 : 1];
-            
-            CGFloat fontSizeForTitle = [self appropriateFontSizeForTitle:title];
-            
-            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:self.font.fontName size:19.0f] range:[string rangeOfString:count]];
-            [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:self.font.fontName size:fontSizeForTitle] range:[string rangeOfString:title]];
-            
-            if (state == UIControlStateNormal) {
+                [attributedString addAttribute:NSFontAttributeName value:self.font range:NSMakeRange(0, attributedString.string.length)];
+                [attributedString addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, attributedString.string.length)];
+            } else {
                 
-                UIColor *topColor = self.inverseTitles ? [color colorWithAlphaComponent:0.5f] : color;
-                UIColor *bottomColor = self.inverseTitles ? color : [color colorWithAlphaComponent:0.5f];
+                NSString *count = [components objectAtIndex:self.inverseTitles ? 1 : 0];
+                NSString *title = [components objectAtIndex:self.inverseTitles ? 0 : 1];
                 
-                NSUInteger topLength = self.inverseTitles ? title.length : count.length;
-                NSUInteger bottomLength = self.inverseTitles ? count.length : title.length;
+                CGFloat fontSizeForTitle = [self appropriateFontSizeForTitle:title];
                 
-                [attributedString addAttribute:NSForegroundColorAttributeName value:topColor range:NSMakeRange(0, topLength)];
-                [attributedString addAttribute:NSForegroundColorAttributeName value:bottomColor range:NSMakeRange(topLength, bottomLength+1)];
-            }
-            else {
-                [attributedString addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, string.length)];
+                [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:self.font.fontName size:19.0f] range:[string rangeOfString:count]];
+                [attributedString addAttribute:NSFontAttributeName value:[UIFont fontWithName:self.font.fontName size:fontSizeForTitle] range:[string rangeOfString:title]];
                 
-                if (state == UIControlStateSelected) {
-                    self.selectionIndicator.backgroundColor = color;
+                if (state == UIControlStateNormal) {
+                    
+                    UIColor *topColor = self.inverseTitles ? [color colorWithAlphaComponent:0.5f] : color;
+                    UIColor *bottomColor = self.inverseTitles ? color : [color colorWithAlphaComponent:0.5f];
+                    
+                    NSUInteger topLength = self.inverseTitles ? title.length : count.length;
+                    NSUInteger bottomLength = self.inverseTitles ? count.length : title.length;
+                    
+                    [attributedString addAttribute:NSForegroundColorAttributeName value:topColor range:NSMakeRange(0, topLength)];
+                    [attributedString addAttribute:NSForegroundColorAttributeName value:bottomColor range:NSMakeRange(topLength, bottomLength+1)];
+                }
+                else {
+                    [attributedString addAttribute:NSForegroundColorAttributeName value:color range:NSMakeRange(0, string.length)];
+                    
+                    if (state == UIControlStateSelected) {
+                        self.selectionIndicator.backgroundColor = color;
+                    }
                 }
             }
         }

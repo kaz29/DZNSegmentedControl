@@ -362,7 +362,7 @@
 // Calculate the most appropriate font size for a button title
 - (CGFloat)appropriateFontSizeForTitle:(NSString *)title
 {
-    CGFloat fontSize = 14.0f;
+    CGFloat fontSize = 12.0f;
     CGFloat minFontSize = 8.0f;
     
     if (!self.adjustsFontSizeToFitWidth) {
